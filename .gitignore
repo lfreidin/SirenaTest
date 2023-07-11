@@ -1,0 +1,10 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/SirenaTestAPI/.vs
+/.vs
+/SirenaTestAPI/bin/Debug/net7.0
+/SirenaTestAPI/obj
+/SirenaTestAPI/SirenaTestAPI.csproj.user
+/SirenaTestAPI/Properties/launchSettings.json
