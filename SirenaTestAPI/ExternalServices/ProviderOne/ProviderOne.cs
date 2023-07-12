@@ -25,7 +25,7 @@ namespace SirenaTestAPI.ExternalServices.ProviderOne
             }
             else
             {
-                var requestUri = $"{baseApiUrl}/search";
+                var requestUri = $"{BaseApiUrl}/search";
                 routes = await GetRoutes(requestUri, request, cancellationToken);
             }
 
@@ -39,7 +39,7 @@ namespace SirenaTestAPI.ExternalServices.ProviderOne
                 routes = routes.Where(x => x.TimeLimit >= searchRequest.Filters.MinTimeLimit).ToArray();
             }
 
-            return routes.Select(route => new RouteMapperOne().FromProviderRoute(route)).ToList();
+            return routes.Select(route => new RouteMapper().FromProviderRoute(route)).ToList();
         }
     }
 }

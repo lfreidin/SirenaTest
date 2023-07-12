@@ -9,14 +9,14 @@ public abstract class BaseProvider<TRequest, TResponse, TRoute> : ISearchProvide
     where TResponse: IProviderSearchResponse<TRoute>
     where TRoute: IProviderRoute
 {
-    protected string baseApiUrl;
+    protected string BaseApiUrl;
     protected HttpClient HttpClient = new();
     protected RoutesCache<TRequest, TRoute> Cache;
-    private ILogger _logger;
+    private readonly ILogger _logger;
 
     protected BaseProvider(string baseApiUrl, ILogger logger)
     {
-        this.baseApiUrl = baseApiUrl;
+        BaseApiUrl = baseApiUrl;
         _logger = logger;
         Cache = new RoutesCache<TRequest, TRoute>();
     }
@@ -34,11 +34,11 @@ public abstract class BaseProvider<TRequest, TResponse, TRoute> : ISearchProvide
 
     public abstract ValueTask<List<DTO.Route>?> Search(DTO.SearchRequest searchRequest, CancellationToken cancellationToken);
 
-    public async Task<bool> CheckAvailability(CancellationToken cancellationToken)
+    public virtual async Task<bool> CheckAvailability(CancellationToken cancellationToken)
     {
         try
         {
-            var result = await HttpClient.GetAsync($"{baseApiUrl}/ping", cancellationToken);
+            var result = await HttpClient.GetAsync($"{BaseApiUrl}/ping", cancellationToken);
             if (result.StatusCode == HttpStatusCode.OK)
             {
                 return true;
@@ -49,11 +49,11 @@ public abstract class BaseProvider<TRequest, TResponse, TRoute> : ISearchProvide
                 return false;
             }
 
-            _logger.LogError($"Unknown status code in {GetType().FullName}.{nameof(CheckAvailability)}");
+            _logger.LogError($"Unknown status code in BaseProvider.{nameof(CheckAvailability)}");
         }
         catch (Exception ex)
         {
-            //todo: log exception
+            _logger.LogError($"Error in BaseProvider.{nameof(CheckAvailability)}",ex);
             return false;
         }
         return false;
@@ -82,11 +82,11 @@ public abstract class BaseProvider<TRequest, TResponse, TRoute> : ISearchProvide
             if (content == null)
             {
                 _logger.LogError($"Empty content in {GetType().FullName}.{nameof(GetRoutes)}");
-                _logger.LogInformation($"Locating routes in cache");
+                _logger.LogInformation("Locating routes from cache");
                 routes = GetFromCache(request);
                 if (routes == null)
                 {
-                    _logger.LogInformation($"Nothing found in cache");
+                    _logger.LogInformation("Nothing found in cache");
                     return null;
                 }
             }

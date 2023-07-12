@@ -2,7 +2,7 @@
 
 namespace SirenaTestAPI.ExternalServices.ProviderOne;
 
-public class RouteMapperOne : IRouteMapper<Route>
+public class RouteMapper 
 {
     public DTO.Route FromProviderRoute(Route sourceRoute)
     {
