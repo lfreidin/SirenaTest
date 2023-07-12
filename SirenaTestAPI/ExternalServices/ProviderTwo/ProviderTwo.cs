@@ -37,6 +37,12 @@ namespace SirenaTestAPI.ExternalServices.ProviderTwo
                 routes = routes.Where(route => route.Price <= searchRequest.Filters.MaxPrice).ToArray();
             }
 
+            if (searchRequest.Filters?.DestinationDateTime != null)
+            {
+                routes = routes.Where(route => route.Arrival.Date <= searchRequest.Filters.DestinationDateTime.Value)
+                    .ToArray();
+            }
+
             return routes.Select(route => new RouteMapper().FromProviderRoute(route)).ToList();
         }
     }

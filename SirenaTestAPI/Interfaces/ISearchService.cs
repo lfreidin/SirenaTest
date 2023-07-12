@@ -1,6 +1,6 @@
 ﻿using SirenaTestAPI.DTO;
 
-namespace SirenaTestApi.Interfaces;
+namespace SirenaTestAPI.Interfaces;
 
 public interface ISearchService
 {

@@ -1,22 +1,26 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using SirenaTestAPI.DTO;
-using SirenaTestApi.Interfaces;
+using SirenaTestAPI.ExternalServices.ProviderOne;
+using SirenaTestAPI.ExternalServices.ProviderTwo;
+using SirenaTestAPI.Interfaces;
 using SirenaTestAPI.Services;
+using SearchRequest = SirenaTestAPI.DTO.SearchRequest;
 
 namespace SirenaTestAPI.Controllers
 {
     [ApiController]
     public class SearchController : ControllerBase
     {
-        private readonly ILogger<SearchController> _logger;
         private readonly ISearchService _searchService;
 
-        // todo: use DI for searchService
+        // todo: use DI for providers and search service
         public SearchController(ILogger<SearchController> logger)
         {
-            _logger = logger;
-            _searchService = new SearchService(_logger);
+            _searchService = new SearchService(new ISearchProvider[]
+                { 
+                    new ProviderOne(logger),
+                    new ProviderTwo(logger)
+                });
         }
 
         [HttpPost("search")]
@@ -32,10 +36,9 @@ namespace SirenaTestAPI.Controllers
         }
 
         [HttpGet("ping")]
-        public ActionResult Get()
+        public async Task<ActionResult> Get(CancellationToken cancellationToken)
         {
-            var available = new Random().Next(0, 2)==1;
-            return available ? Ok() : new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            return await _searchService.IsAvailableAsync(cancellationToken) ? Ok() : new StatusCodeResult(StatusCodes.Status500InternalServerError);
         }
 
     }
