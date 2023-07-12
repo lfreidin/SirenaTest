@@ -8,3 +8,5 @@
 /SirenaTestAPI/obj
 /SirenaTestAPI/SirenaTestAPI.csproj.user
 /SirenaTestAPI/Properties/launchSettings.json
+/SirenaTestApi.Tests/bin/Debug/net7.0
+/SirenaTestApi.Tests/obj
